@@ -15,3 +15,29 @@ CHISA is an open-source, offline-first mobile architecture engineered to mitigat
 
 ## 📝 Open Source Licensing
 This project is licensed under the MIT License - see the LICENSE file for details. Built to align strictly with the Digital Public Goods Alliance (DPGA) standards.
+
+
+
+
+### 📊 Local Triage Logic (AppSheet App Formula)
+
+To ensure zero-latency routing for critical cases even before the AI finishes asynchronous parsing, the `Urgency_Level` field utilizes the following native AppSheet App Formula to calculate immediate priority based on frontline iCCM inputs:
+
+```excel
+IF(
+  OR(
+    [MUAC_Reading] <= 11.5,
+    [Pitting_Oedema_Status] = "Yes",
+    [Respiratory_Status] = "Chest Indrawing"
+  ),
+  "Critical",
+  IF(
+    OR(
+      [Malaria_RDT_Result] = "Positive",
+      [Diarrhoea_Duration] >= 3,
+      [Breaths_Per_Minute] >= 40
+    ),
+    "High",
+    "Routine"
+  )
+)
